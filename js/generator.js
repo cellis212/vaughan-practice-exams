@@ -8,7 +8,7 @@
 // compile so the document class is pinned.
 
 const LATEX_ENDPOINT = "https://latex.ytotech.com/builds/sync";
-const PY_MODULES = ["exam_common.py", "engine_intro.py", "engine_lh.py", "generator.py", "pdf_split.py"];
+const PY_MODULES = ["exam_common.py", "engine_intro.py", "engine_lh.py", "generator.py", "param_engine.py", "pdf_split.py"];
 
 const params = new URLSearchParams(window.location.search);
 const uniId = params.get("u");

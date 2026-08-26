@@ -29,6 +29,12 @@ def reseed_from_system():
     _rng.seed()
 
 
+def get_rng():
+    """The shared exam RNG, for parameter draws in param_engine — one RNG
+    stream so a seed reproduces the whole exam, numbers included."""
+    return _rng
+
+
 def r_sample_permutation(n):
     """Mirror of R's sample(n) / sample(1:n, n): a random permutation of
     1..n (1-based, like R)."""

@@ -80,6 +80,55 @@ Each professor/course combination owns its folder under
 6. Commit and push (or edit directly on GitHub). The site updates on the
    next Pages deploy — no build step.
 
+## Auto-generated numbers for math questions
+
+Math questions can draw **fresh numbers on every generation**, so the
+numbers on a real exam will not match any practice exam a student has
+printed, and every practice exam is a new problem set. A question opts in
+via the optional `params` column plus `[[expr]]` placeholders in its text
+and choice cells (the delimiter is `[[ ]]`, not `{ }`, because the cells
+are full of LaTeX braces):
+
+| column | content |
+| --- | --- |
+| `params` | one draw per line, e.g. `F = pick(10000, 20000, 50000)` then `p = pick(0.002, 0.005, 0.01)`; later lines can use earlier names (`prem = F * p * pick(2, 5, 10)`); `require(cond)` redraws until the condition holds |
+| `Text` / `b_info` | `The policy pays \$[[num(F)]] with probability [[num(p,3)]].` |
+| `a`…`d` | formulas: the correct one computes the right answer, the others encode plausible wrong methods, e.g. `[[dollar(prem - F*p)]]` vs `[[dollar(prem)]]` |
+| `correct` | unchanged — the letter of the cell holding the correct formula (choices are still shuffled per exam, so its printed position varies) |
+
+Available functions: `pick(v1, v2, ...)`, `steps(lo, hi, step)`,
+`randint(a, b)`, `require(cond)`, `sqrt/exp/log/floor/ceil/abs/min/max/round`,
+and the formatters `dollar(x, nearest=1)` (→ `\$1,235`; `dollar(x, 100)`
+matches a "round to nearest 00s" instruction), `num(x, decimals,
+nearest=None)` (commas, half-up rounding), and `pct(x, decimals)`
+(`pct(0.05, 0)` → `5\%`). Plain arithmetic, comparisons, and
+`a if cond else b` also work.
+
+Rules of the game, enforced by `py/param_engine.py` at generation time:
+
+- **Blocks share one draw**: put the scenario's `params` on the block's
+  first row (the one with `b_info`); every row of the block can reference
+  those names, so "based on the following information" numbers stay
+  consistent across the block.
+- **Choices are checked for collisions**: if two formulas round to the same
+  printed value, the whole group is silently redrawn; a pair that *always*
+  collides fails the generation with an error naming the question.
+- **Seeds reproduce everything**: parameter draws come from the same seeded
+  RNG as question sampling, so the "Random Seed" box reproduces an entire
+  exam, numbers included. Generate a real exam with a private seed and you
+  can re-print it identically later — while students, not knowing the seed,
+  cannot regenerate your exam's numbers.
+- Banks without a `params` column are completely unaffected.
+
+The Ellis "Test Bank Module 1 Math.xlsx" is fully parameterized and doubles
+as a worked example; `tools/build_param_math_bank.py` regenerates it. Math
+questions embedded in a mixed bank work the same way — the Ellis "Test Bank
+Topic 3.xlsx" risk-pooling block (q18–q21) is parameterized in place via
+`tools/build_param_topic3_block.py` while the other 46 questions are
+untouched (a static row in a parameterized block simply passes through).
+`tests/test_param_engine.py` stress-tests the engine and both banks (300
+seeds each, plus independent recomputation of the correct answers).
+
 ## Adding a professor / course / university
 
 1. Create `courses/<university>/<course>/<professor>/` with a `config.json`

@@ -20,6 +20,7 @@ import exam_common
 from exam_common import r_char
 import engine_intro
 import engine_lh
+import param_engine
 
 ENGINES = {
     "intro": engine_intro,
@@ -133,6 +134,14 @@ def generate_exam(full_bank, sel_topics, n_questions, seed_input, landscape,
         }
 
     qind = exam_common.r_sample_permutation(len(cur_bank))
+    # Instantiate parameterized math questions (banks with a `params`
+    # column / [[expr]] placeholders): every generation draws fresh
+    # numbers from the same seeded RNG, so a seed reproduces the exam.
+    # Static banks pass through byte-identically with no RNG draws.
+    try:
+        cur_bank = param_engine.instantiate_bank(cur_bank, exam_common.get_rng())
+    except param_engine.ParamError as e:
+        return {"status": "error", "message": str(e)}
     # The examdesign class renders num_versions versions in one document
     # (rearranged question order per version, front page shows the version
     # letter) — the same mechanism app.R used for real exams, so professors
