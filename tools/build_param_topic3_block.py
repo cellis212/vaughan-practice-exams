@@ -1,5 +1,5 @@
-"""Parameterize the risk-pooling math block (q18-q21) in the Ellis
-"Test Bank Topic 3.xlsx", leaving the other 46 questions byte-identical.
+"""Parameterize the risk-pooling math block (q18-q21) in the central
+"Test Bank Topic 3.xlsx" (banks/intro-to-rmi), leaving the other 46 questions byte-identical.
 
 The block's math, mirroring the original answers:
   - Each person faces loss L (or LC for Person C) with probability p, else $0.
@@ -22,8 +22,7 @@ import openpyxl
 
 BANK = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "courses", "university-of-iowa", "intro-to-rmi", "ellis", "data",
-    "Test Bank Topic 3.xlsx",
+    "banks", "intro-to-rmi", "Test Bank Topic 3.xlsx",
 )
 
 PARAMS = (

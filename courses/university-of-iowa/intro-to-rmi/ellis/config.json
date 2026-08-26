@@ -1,5 +1,6 @@
 {
   "engine": "intro",
+  "banks_base": "banks/intro-to-rmi",
   "course_name": "Introduction to Risk Management and Insurance",
   "app_title": "Create Practice Exams for FIN 3400 at the University of Iowa",
   "classnum": "FIN 3400",

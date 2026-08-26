@@ -1,4 +1,4 @@
-"""Regenerate the parameterized "Test Bank Module 1 Math.xlsx" (Ellis copy).
+"""Regenerate the parameterized "Test Bank Module 1 Math.xlsx" (central bank store).
 
 Each question is a template: the `params` column draws the numbers, the
 Text / choice / b_info cells embed [[expr]] placeholders, and column `a`
@@ -17,8 +17,7 @@ import openpyxl
 
 OUT = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "courses", "university-of-iowa", "intro-to-rmi", "ellis", "data",
-    "Test Bank Module 1 Math.xlsx",
+    "banks", "intro-to-rmi", "Test Bank Module 1 Math.xlsx",
 )
 
 COLUMNS = ["Topic", "Text", "a", "b", "c", "d", "extras", "correct",

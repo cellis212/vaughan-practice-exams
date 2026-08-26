@@ -16,8 +16,8 @@ for FIN 3400 (Introduction to RMI) and FIN 4430 (Life / Health Insurance).
 - **GitHub Pages** serves everything statically — there is no backend.
 - The exam-building logic (`py/`) is an exact Python port of the R code in
   `Functions and Options.R` + `app.R`. It runs **in the browser** via
-  [Pyodide](https://pyodide.org), reading each professor's `.xlsx` test banks
-  with `openpyxl`.
+  [Pyodide](https://pyodide.org), reading the `.xlsx` test banks each
+  professor's config selects with `openpyxl`.
 - The generated LaTeX (`examdesign` class) is compiled to PDF by the free
   [LaTeX-on-HTTP](https://github.com/YtoTech/latex-on-http) service at
   `latex.ytotech.com` (CORS-enabled, returns the PDF directly). The repo's
@@ -40,23 +40,37 @@ py/
   generator.py             Bank loading + the generate handler (app.R port)
 assets/examdesign.cls      LaTeX document class shipped with every compile
 catalog.json               Universities / courses / professors shown on the landing page
+banks/<course>/*.xlsx      The central test-bank store, one copy per course,
+                           shared by every professor of that course
 courses/<university>/<course>/<professor>/
-  config.json              That professor's bank list, topics, titles, coverage notes
-  data/*.xlsx              That professor's own copy of the test banks
+  config.json              That professor's index into the central store:
+                           which banks, topic labels, groups, titles
+  data/*.xlsx              Optional professor-specific banks (only for
+                           entries marked "local": true — none by default)
+tools/                     Scripts that regenerate the parameterized banks
 tests/                     R-vs-Python byte-level parity test (see below)
 ```
 
 ## Updating your test bank (professors)
 
-Each professor/course combination owns its folder under
-`courses/university-of-iowa/<course>/<your-name>/`:
+The question banks live once, in the central per-course store
+`banks/<course>/` (e.g. `banks/intro-to-rmi/`), and every professor of the
+course draws from that same store. Your folder under
+`courses/university-of-iowa/<course>/<your-name>/` holds only your
+`config.json` — an index saying which banks you use, under what topic
+labels and exam groups. Its `"banks_base"` field points at the store.
 
-1. **Edit questions**: replace or edit the `.xlsx` files in your `data/`
-   folder. Required columns: `q_id`, `Text`, `a`, `b`, `c`, `d` (d may be
+1. **Edit questions**: edit the `.xlsx` files in `banks/<course>/` —
+   the edit reaches every professor of the course at once. Required
+   columns: `q_id`, `Text`, `a`, `b`, `c`, `d` (d may be
    empty), `correct` (`a`…`d`, multi like `acd`, or `none`), `extras`
    (`n` = exactly one correct answer, `y` = multi-select + "None of the
    above"), and optionally `block_id` / `b_info` for question blocks sharing
    context. LaTeX special characters in text must be escaped.
+   **Professor-specific questions**: to use your own version of a bank
+   instead of the shared one, put the file in your own `data/` folder and
+   mark that bank's config entry with `"local": true` — everyone else
+   keeps the central copy.
 2. **Enable/disable topics**: in your `config.json`, flip a bank's
    `"enabled"` flag (this mirrors commenting banks in/out of
    `banks_to_load` in the original `app.R`). Order matters — it is the order
@@ -120,19 +134,24 @@ Rules of the game, enforced by `py/param_engine.py` at generation time:
   cannot regenerate your exam's numbers.
 - Banks without a `params` column are completely unaffected.
 
-The Ellis "Test Bank Module 1 Math.xlsx" is fully parameterized and doubles
-as a worked example; `tools/build_param_math_bank.py` regenerates it. Math
-questions embedded in a mixed bank work the same way — the Ellis "Test Bank
-Topic 3.xlsx" risk-pooling block (q18–q21) is parameterized in place via
+The central "Test Bank Module 1 Math.xlsx" (`banks/intro-to-rmi/`) is fully
+parameterized and doubles as a worked example;
+`tools/build_param_math_bank.py` regenerates it. Math questions embedded in
+a mixed bank work the same way — the central "Test Bank Topic 3.xlsx"
+risk-pooling block (q18–q21) is parameterized in place via
 `tools/build_param_topic3_block.py` while the other 46 questions are
 untouched (a static row in a parameterized block simply passes through).
+Because the store is shared, every professor's practice exams draw fresh
+numbers from these banks automatically.
 `tests/test_param_engine.py` stress-tests the engine and both banks (300
 seeds each, plus independent recomputation of the correct answers).
 
 ## Adding a professor / course / university
 
 1. Create `courses/<university>/<course>/<professor>/` with a `config.json`
-   and a `data/` folder (copy an existing one as a template).
+   (copy an existing one as a template — it indexes the central
+   `banks/<course>/` store, so no bank files need copying). A new course
+   also gets its own `banks/<course>/` folder.
 2. Add the professor (or course/university) to `catalog.json`.
 
 ## Exactness guarantee

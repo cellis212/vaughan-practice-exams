@@ -64,6 +64,19 @@ function enabledBanks() {
   return config.banks.filter((b) => b.enabled);
 }
 
+// Banks live in the central per-course store (config.banks_base, e.g.
+// "banks/intro-to-rmi") shared by every professor of the course; each
+// professor's config is just an index into it. A bank entry with
+// "local": true instead resolves against that professor's own data/
+// folder (for professor-specific custom banks). Configs without
+// banks_base keep the original per-professor layout.
+function bankUrl(bank) {
+  if (bank.local || !config.banks_base) {
+    return comboBase() + "/data/" + bank.file;
+  }
+  return config.banks_base + "/" + bank.file;
+}
+
 function makeTopicLabel(topic) {
   const label = document.createElement("label");
   const cb = document.createElement("input");
@@ -227,7 +240,7 @@ async function loadEngine() {
   setStatus("Loading question banks…");
   pyodide.FS.mkdirTree("/app/data");
   for (const bank of enabledBanks()) {
-    const bytes = await fetchOk(comboBase() + "/data/" + bank.file, "bytes");
+    const bytes = await fetchOk(bankUrl(bank), "bytes");
     const dest = "/app/data/" + bank.file;
     const dir = dest.substring(0, dest.lastIndexOf("/"));
     pyodide.FS.mkdirTree(dir);

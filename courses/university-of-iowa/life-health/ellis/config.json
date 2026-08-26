@@ -1,5 +1,6 @@
 {
   "engine": "lh",
+  "banks_base": "banks/life-health",
   "course_name": "Life / Health Insurance",
   "app_title": "Create Practice Exams for FIN 4430",
   "classnum": "FIN 4430",

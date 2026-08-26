@@ -5,8 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-INTRO_DATA="${1:-../courses/university-of-iowa/intro-to-rmi/ellis/data}"
-LH_DATA="${2:-../courses/university-of-iowa/life-health/ellis/data}"
+INTRO_DATA="${1:-../banks/intro-to-rmi}"
+LH_DATA="${2:-../banks/life-health}"
 
 rm -rf out_r out_py
 Rscript parity_test.R out_r reference "$INTRO_DATA" "$LH_DATA"

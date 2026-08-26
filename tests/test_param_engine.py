@@ -6,7 +6,7 @@ Covers:
   1. Engine unit behavior: substitution, formatting, block-shared params,
      require() redraws, duplicate-choice redraws, hard failures, and the
      static-bank pass-through (identity + zero RNG consumption).
-  2. The converted "Test Bank Module 1 Math.xlsx" (Ellis copy): stress
+  2. The converted "Test Bank Module 1 Math.xlsx" (central store): stress
      instantiation over many seeds; every placeholder resolves, every
      question's choices are distinct, and the correct-answer cell of a
      sample of questions matches an independent recomputation.
@@ -28,8 +28,7 @@ import generator
 import param_engine
 from param_engine import ParamError
 
-ELLIS_DATA = os.path.join(REPO, "courses", "university-of-iowa",
-                          "intro-to-rmi", "ellis", "data")
+ELLIS_DATA = os.path.join(REPO, "banks", "intro-to-rmi")
 
 failures = []
 
