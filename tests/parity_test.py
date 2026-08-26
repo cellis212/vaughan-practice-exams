@@ -125,8 +125,8 @@ engine_intro.create_exam(bank=full_intro,
                          landscape=False)
 
 full_lh = generator.load_full_bank([
-    {"path": "Test Bank Module 3.xlsx", "topic": "Lecture"},
-    {"path": "Test Bank Reading - Annuity Puzzle.xlsx", "topic": "Annuity Puzzle"},
+    {"path": "Module 3/Test Bank Module 3.xlsx", "topic": "Lecture"},
+    {"path": "Module 3/Test Bank Reading - Annuity Puzzle.xlsx", "topic": "Annuity Puzzle"},
 ], base_dir=lh_data)
 engine_lh.create_exam(bank=full_lh,
                       qind=list(range(1, len(full_lh) + 1)),

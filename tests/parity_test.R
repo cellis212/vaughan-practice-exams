@@ -130,8 +130,8 @@ intro$create_exam(bank = full_intro, qind = seq_len(nrow(full_intro)),
                   landscape = FALSE)
 
 lh_banks <- list(
-  list(path = file.path(lh_data, "Test Bank Module 3.xlsx"), topic = "Lecture"),
-  list(path = file.path(lh_data, "Test Bank Reading - Annuity Puzzle.xlsx"), topic = "Annuity Puzzle")
+  list(path = file.path(lh_data, "Module 3", "Test Bank Module 3.xlsx"), topic = "Lecture"),
+  list(path = file.path(lh_data, "Module 3", "Test Bank Reading - Annuity Puzzle.xlsx"), topic = "Annuity Puzzle")
 )
 full_lh <- purrr::map_df(lh_banks, function(bk) {
   readxl::read_xlsx(bk$path) %>% mutate(Topic = bk$topic)
