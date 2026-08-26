@@ -8,7 +8,7 @@
 // compile so the document class is pinned.
 
 const LATEX_ENDPOINT = "https://latex.ytotech.com/builds/sync";
-const PY_MODULES = ["exam_common.py", "engine_intro.py", "engine_lh.py", "generator.py"];
+const PY_MODULES = ["exam_common.py", "engine_intro.py", "engine_lh.py", "generator.py", "pdf_split.py"];
 
 const params = new URLSearchParams(window.location.search);
 const uniId = params.get("u");
@@ -41,7 +41,9 @@ function setStatus(text) {
 function fail(message) {
   setStatus(message);
   notify(message, "error");
-  throw new Error(message);
+  const err = new Error(message);
+  err.handled = true;
+  throw err;
 }
 
 function comboBase() {
@@ -209,7 +211,7 @@ async function loadEngine() {
   pyodide = await loadPyodide();
   await pyodide.loadPackage("micropip");
   const micropip = pyodide.pyimport("micropip");
-  await micropip.install("openpyxl");
+  await micropip.install(["openpyxl", "pypdf"]);
 
   pyodide.FS.mkdirTree("/app/py");
   for (const mod of PY_MODULES) {
@@ -297,16 +299,41 @@ async function compilePdf(tex) {
   return new Blob([bytes], { type: "application/pdf" });
 }
 
-function showDownloadButton(blob) {
+function showDownloadButton(blob, filename, label) {
   if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
   currentPdfUrl = URL.createObjectURL(blob);
   downloadArea.innerHTML = "";
   const a = document.createElement("a");
   a.className = "download-btn";
   a.href = currentPdfUrl;
-  a.download = "Practice_Exam.pdf";
-  a.textContent = "Download Exam PDF";
+  a.download = filename;
+  a.textContent = label;
   downloadArea.appendChild(a);
+}
+
+// Split the compiled PDF into per-version exam / answer-key files and zip
+// them (py/pdf_split.py, running in Pyodide).
+async function splitAndZip(pdfBlob) {
+  const pdfBytes = new Uint8Array(await pdfBlob.arrayBuffer());
+  pyodide.FS.writeFile("/app/Exam/Practice_Exam.pdf", pdfBytes);
+  let zipProxy;
+  try {
+    zipProxy = pyodide.runPython(
+      'import pdf_split\n' +
+      'pdf_split.split_exam_pdf(open("/app/Exam/Practice_Exam.pdf", "rb").read())'
+    );
+  } catch (err) {
+    const msg = String(err.message || err);
+    const detail = msg.includes("Could not detect")
+      ? "Could not detect version/answer-key boundaries in the compiled PDF; " +
+        "uncheck \"Separate Files for Versions / Answer Keys\" to download " +
+        "the combined PDF instead."
+      : "Splitting the PDF failed: " + msg;
+    fail(detail);
+  }
+  const zipBytes = zipProxy.toJs();
+  zipProxy.destroy();
+  return new Blob([zipBytes], { type: "application/zip" });
 }
 
 async function onGenerate() {
@@ -353,12 +380,18 @@ async function onGenerate() {
 
     setStatus("Compiling PDF (this can take up to a minute)…");
     const blob = await compilePdf(result.tex);
-    showDownloadButton(blob);
+    if (document.getElementById("split-files").checked) {
+      setStatus("Splitting versions and answer keys…");
+      const zipBlob = await splitAndZip(blob);
+      showDownloadButton(zipBlob, "Practice_Exam.zip", "Download Exam ZIP");
+    } else {
+      showDownloadButton(blob, "Practice_Exam.pdf", "Download Exam PDF");
+    }
     notify("Exam generated successfully.", "message");
     setStatus("Ready.");
   } catch (err) {
     console.error(err);
-    if (statusLine.textContent.indexOf("failed") === -1) {
+    if (!err.handled) {
       setStatus("Generation failed: " + err.message);
       notify("Generation failed: " + err.message, "error");
     }

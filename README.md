@@ -68,7 +68,10 @@ Each professor/course combination owns its folder under
    e.g. `Exam 2:`) to generate an actual exam — the `examdesign` class
    renders all versions in one PDF with per-version question order and a
    version letter on each front page, with the same formatting as the
-   practice exams.
+   practice exams. Check "Separate Files for Versions / Answer Keys" to
+   instead download a zip of per-version exam and answer-key PDFs (the page
+   boundaries are detected from the compiled document and split
+   client-side).
 5. **Exam sections**: each bank's `"group"` field (e.g. `"Midterm 1"`) is the
    collapsible section it appears under in the sidebar; the section's
    checkbox selects every topic in that exam at once. Group names and
