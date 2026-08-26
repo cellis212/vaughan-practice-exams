@@ -175,6 +175,31 @@ function renderUi() {
   document.getElementById("n-questions").value = config.default_n_questions;
   document.getElementById("coverage").innerHTML = config.coverage_html || "";
   document.getElementById("app-footer").textContent = config.footer || "";
+
+  // Question-count presets. "Normal Exam Size" comes from the config
+  // (per professor/course; defaults to 75). "Every Question" fills in the
+  // total question count across the currently selected topics once the
+  // banks are loaded.
+  const normalSize = config.normal_exam_size || 75;
+  const normalBtn = document.getElementById("preset-normal");
+  normalBtn.textContent = "Normal Exam Size (" + normalSize + ")";
+  normalBtn.addEventListener("click", () => {
+    document.getElementById("n-questions").value = normalSize;
+  });
+
+  document.getElementById("preset-every").addEventListener("click", () => {
+    const sel = Array.from(document.querySelectorAll(".topic-cb:checked"))
+      .map((cb) => cb.value);
+    if (sel.length === 0) {
+      notify("Select at least one topic first.", "error");
+      return;
+    }
+    pyodide.globals.set("every_sel_json", JSON.stringify(sel));
+    const count = pyodide.runPython(
+      "sum(1 for r in full_bank if r['Topic'] in set(json.loads(every_sel_json)))"
+    );
+    document.getElementById("n-questions").value = count;
+  });
 }
 
 async function loadEngine() {
@@ -231,6 +256,7 @@ def run_generation(sel_topics_json, n_questions, seed_input, landscape,
   clsText = await fetchOk("assets/examdesign.cls", "text");
   banksLoaded = true;
   generateBtn.disabled = false;
+  document.getElementById("preset-every").disabled = false;
   setStatus("Ready.");
 }
 

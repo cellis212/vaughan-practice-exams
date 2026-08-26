@@ -184,5 +184,6 @@
     }
   ],
   "professor": "Professor Abraham",
-  "university": "University of Iowa"
+  "university": "University of Iowa",
+  "normal_exam_size": 75
 }

@@ -185,6 +185,27 @@ a.download-btn {
 
 .topic-group.open .group-topics { display: block; }
 
+.preset-row {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+  flex-wrap: wrap;
+}
+
+button.preset {
+  font: inherit;
+  font-size: 0.86rem;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  padding: 0.28rem 0.7rem;
+  cursor: pointer;
+}
+
+button.preset:hover:not(:disabled) { background: var(--iowa-gold); border-color: #d4aa00; }
+button.preset:disabled { opacity: 0.55; cursor: not-allowed; }
+
 .checkbox-row { margin-top: 0.9rem; }
 .checkbox-row label { font-weight: normal; }
 .checkbox-row input { margin-right: 0.45rem; }
