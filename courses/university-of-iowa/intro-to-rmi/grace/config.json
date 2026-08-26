@@ -5,7 +5,6 @@
   "classnum": "FIN 3400",
   "semester": "Spring 2026",
   "default_n_questions": 50,
-  "coverage_html": "<h4>Cumulative Final Exam Coverage (150 questions):</h4>\n<div style=\"margin-left: 20px;\">\n  <ul>\n    <li>Topics 1-9</li>\n    <li>Math For Module 1</li>\n  </ul>\n  <p><strong>Note:</strong> the following topics are for <strong>Exam #3 review only</strong> and are NOT covered on the cumulative final exam:</p>\n  <ul>\n    <li>RAND HIE Paper-Cast</li>\n    <li>United Welfare Paper-Cast</li>\n    <li>Oregon Medicaid Paper-Cast</li>\n    <li>Arrow Health Economics Paper-Cast</li>\n    <li>Social Insurance Paper-Cast</li>\n    <li>Health Insurance Videos</li>\n  </ul>\n  <p>If you are preparing for the cumulative final, do not select these topics. The Health Insurance Game questions on the real Exam #3 are not included here &mdash; review that material directly.</p>\n</div>",
   "footer": "Created by Dr. Cameron Ellis and Dr. Meghan Esson",
   "banks": [
     {

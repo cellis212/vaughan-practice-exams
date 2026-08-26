@@ -5,7 +5,6 @@
   "classnum": "FIN 4430",
   "semester": "Spring 2026",
   "default_n_questions": 50,
-  "coverage_html": "<h4>Exam Coverage:</h4>\n<div style=\"margin-left: 20px;\">\n  <h5>Exam 1 (75 questions):</h5>\n  <ul>\n    <li>Lecture</li>\n    <li>All the readings</li>\n  </ul>\n</div>",
   "footer": "",
   "banks": [
     {

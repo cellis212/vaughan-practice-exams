@@ -177,7 +177,11 @@ function renderUi() {
   }
 
   document.getElementById("n-questions").value = config.default_n_questions;
+  // coverage_html is optional; exam coverage is normally conveyed by the
+  // grouped topic sections in the sidebar.
   document.getElementById("coverage").innerHTML = config.coverage_html || "";
+  document.getElementById("coverage-divider").style.display =
+    config.coverage_html ? "" : "none";
   document.getElementById("app-footer").textContent = config.footer || "";
 
   // Question-count presets. "Normal Exam Size" comes from the config
