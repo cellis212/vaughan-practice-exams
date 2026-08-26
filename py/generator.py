@@ -92,7 +92,8 @@ def unique_topics(full_bank):
 
 def generate_exam(full_bank, sel_topics, n_questions, seed_input, landscape,
                   engine, semester, classnum, exam_dir="./Exam",
-                  real_exam=False, real_exam_title=None):
+                  real_exam=False, real_exam_title=None,
+                  num_versions_input=1, title_input="Practice Exam:"):
     """Port of the observeEvent(input$generate_exam, ...) handler.
 
     Returns {"status": "ok", "tex": ...} on success or
@@ -132,8 +133,12 @@ def generate_exam(full_bank, sel_topics, n_questions, seed_input, landscape,
         }
 
     qind = exam_common.r_sample_permutation(len(cur_bank))
-    num_versions = 1
-    title = "Practice Exam:"
+    # The examdesign class renders num_versions versions in one document
+    # (rearranged question order per version, front page shows the version
+    # letter) — the same mechanism app.R used for real exams, so professors
+    # can generate actual exams with identical formatting.
+    num_versions = num_versions_input
+    title = title_input
 
     if real_exam:
         num_versions = 3

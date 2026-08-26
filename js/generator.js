@@ -48,8 +48,10 @@ function comboBase() {
   return "courses/" + uniId + "/" + courseId + "/" + profId;
 }
 
-async function fetchOk(url, as) {
-  const resp = await fetch(url);
+async function fetchOk(url, as, revalidate) {
+  // revalidate: for files that must stay in lockstep with this script
+  // (the Python modules and the config), bypass stale browser caches.
+  const resp = await fetch(url, revalidate ? { cache: "no-cache" } : {});
   if (!resp.ok) fail("Failed to load " + url + " (HTTP " + resp.status + ")");
   if (as === "json") return resp.json();
   if (as === "bytes") return new Uint8Array(await resp.arrayBuffer());
@@ -211,7 +213,7 @@ async function loadEngine() {
 
   pyodide.FS.mkdirTree("/app/py");
   for (const mod of PY_MODULES) {
-    const src = await fetchOk("py/" + mod, "text");
+    const src = await fetchOk("py/" + mod, "text", true);
     pyodide.FS.writeFile("/app/py/" + mod, src);
   }
   pyodide.runPython("import sys; sys.path.insert(0, '/app/py')");
@@ -238,7 +240,7 @@ banks_to_load = json.loads(banks_to_load_json)
 full_bank = generator.load_full_bank(banks_to_load, base_dir="/app/data")
 
 def run_generation(sel_topics_json, n_questions, seed_input, landscape,
-                   engine, semester, classnum):
+                   engine, semester, classnum, num_versions, exam_title):
     result = generator.generate_exam(
         full_bank,
         json.loads(sel_topics_json),
@@ -249,6 +251,8 @@ def run_generation(sel_topics_json, n_questions, seed_input, landscape,
         semester,
         classnum,
         exam_dir="/app/Exam",
+        num_versions_input=num_versions,
+        title_input=exam_title,
     )
     return json.dumps(result)
 `);
@@ -320,6 +324,12 @@ async function onGenerate() {
   }
   const seedInput = document.getElementById("seed-input").value.trim();
   const landscape = document.getElementById("landscape-mode").checked;
+  const numVersions = parseInt(document.getElementById("n-versions").value, 10);
+  if (!isFinite(numVersions) || numVersions < 1) {
+    notify("Number of Versions must be a whole number of at least 1.", "error");
+    return;
+  }
+  const examTitle = document.getElementById("exam-title").value.trim() || "Practice Exam:";
 
   generateBtn.disabled = true;
   try {
@@ -327,7 +337,7 @@ async function onGenerate() {
     const runGeneration = pyodide.globals.get("run_generation");
     const resultJson = runGeneration(
       JSON.stringify(selTopics), nQuestions, seedInput, landscape,
-      config.engine, config.semester, config.classnum
+      config.engine, config.semester, config.classnum, numVersions, examTitle
     );
     const result = JSON.parse(resultJson);
 
@@ -365,7 +375,7 @@ async function onGenerate() {
     return;
   }
   try {
-    config = await fetchOk(comboBase() + "/config.json", "json");
+    config = await fetchOk(comboBase() + "/config.json", "json", true);
   } catch (err) {
     document.getElementById("app-title").textContent =
       "Unknown course/professor combination.";

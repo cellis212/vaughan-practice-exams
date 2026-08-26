@@ -64,12 +64,17 @@ Each professor/course combination owns its folder under
 3. **Exam size presets**: the "Normal Exam Size" button fills in your
    config's `"normal_exam_size"` (default 75); "Every Question" fills in the
    total question count of the currently selected topics.
-4. **Exam sections**: each bank's `"group"` field (e.g. `"Midterm 1"`) is the
+4. **Real exams**: set "Number of Versions" above 1 (and edit "Exam Title",
+   e.g. `Exam 2:`) to generate an actual exam — the `examdesign` class
+   renders all versions in one PDF with per-version question order and a
+   version letter on each front page, with the same formatting as the
+   practice exams.
+5. **Exam sections**: each bank's `"group"` field (e.g. `"Midterm 1"`) is the
    collapsible section it appears under in the sidebar; the section's
    checkbox selects every topic in that exam at once. Group names and
    assignments are free-form per professor — rename them, regroup banks, or
    remove the `"group"` fields entirely to get a flat topic list.
-3. Commit and push (or edit directly on GitHub). The site updates on the
+6. Commit and push (or edit directly on GitHub). The site updates on the
    next Pages deploy — no build step.
 
 ## Adding a professor / course / university
