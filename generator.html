@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Practice Exam Generator | Vaughan Institute of Risk Management &amp; Insurance</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <p class="institute"><a href="index.html">The Emmett J. Vaughan Institute of Risk Management &amp; Insurance</a></p>
+    <p class="college">Tippie College of Business &middot; The University of Iowa</p>
+  </header>
+
+  <main>
+    <p class="crumb">
+      <a href="index.html">&larr; Choose a different course or professor</a>
+      <span id="crumb-detail"></span>
+    </p>
+
+    <div class="card">
+      <h1 class="page-title" id="app-title">Loading&hellip;</h1>
+
+      <div class="generator-layout">
+        <div class="sidebar">
+          <label class="field-label">Select Topics to Include:</label>
+          <div class="topic-list" id="topic-list"></div>
+
+          <label class="field-label" for="n-questions">Number of Questions:</label>
+          <input type="number" id="n-questions" min="1" value="50">
+
+          <label class="field-label" for="seed-input">Random Seed (optional):</label>
+          <input type="text" id="seed-input" value="">
+
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="landscape-mode"> Landscape layout</label>
+          </div>
+
+          <button class="primary" id="generate-exam" disabled>Generate Exam</button>
+          <div class="status-line" id="status-line">Loading exam engine&hellip;</div>
+        </div>
+
+        <div class="main-panel">
+          <h4>Instructions:</h4>
+          <p>Pick topics, number of questions, and optionally a random seed.
+             Click Generate Exam to compile a PDF.</p>
+          <p>If you want to know more about a particular question, email me and
+             include the reference number for the question in the email.</p>
+          <hr>
+          <div id="coverage"></div>
+          <div id="download-area"></div>
+          <pre class="compile-log" id="compile-log"></pre>
+          <div class="app-footer" id="app-footer"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p class="inst">The Emmett J. Vaughan Institute of Risk Management &amp; Insurance</p>
+    <p>Tippie College of Business &middot; The University of Iowa</p>
+    <p>&copy; 2026 Cameron Ellis and Meghan Esson. All rights reserved.</p>
+  </footer>
+
+  <div id="notifications"></div>
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+  <script src="js/generator.js"></script>
+</body>
+</html>

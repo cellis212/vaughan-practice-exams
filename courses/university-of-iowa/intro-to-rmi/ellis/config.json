@@ -1,0 +1,169 @@
+{
+  "engine": "intro",
+  "course_name": "Introduction to Risk Management and Insurance",
+  "app_title": "Create Practice Exams for FIN 3400 at the University of Iowa",
+  "classnum": "FIN 3400",
+  "semester": "Spring 2026",
+  "default_n_questions": 50,
+  "coverage_html": "<h4>Cumulative Final Exam Coverage (150 questions):</h4>\n<div style=\"margin-left: 20px;\">\n  <ul>\n    <li>Topics 1-9</li>\n    <li>Math For Module 1</li>\n  </ul>\n  <p><strong>Note:</strong> the following topics are for <strong>Exam #3 review only</strong> and are NOT covered on the cumulative final exam:</p>\n  <ul>\n    <li>RAND HIE Paper-Cast</li>\n    <li>United Welfare Paper-Cast</li>\n    <li>Oregon Medicaid Paper-Cast</li>\n    <li>Arrow Health Economics Paper-Cast</li>\n    <li>Social Insurance Paper-Cast</li>\n    <li>Health Insurance Videos</li>\n  </ul>\n  <p>If you are preparing for the cumulative final, do not select these topics. The Health Insurance Game questions on the real Exam #3 are not included here &mdash; review that material directly.</p>\n</div>",
+  "footer": "Created by Dr. Cameron Ellis and Dr. Meghan Esson",
+  "banks": [
+    {
+      "file": "Test Bank Topic 1.xlsx",
+      "topic": "Topic 1",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic 2.xlsx",
+      "topic": "Topic 2",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic 3.xlsx",
+      "topic": "Topic 3",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Module 1 Math.xlsx",
+      "topic": "Math For Module 1",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Reading statquest.xlsx",
+      "topic": "Statquest Video",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading 50things.xlsx",
+      "topic": "50 Things Podcast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading MH Origin.xlsx",
+      "topic": "MH Origin Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Corporate Demand RM.xlsx",
+      "topic": "Corporate Demand for Insurance Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Market for Lemons.xlsx",
+      "topic": "Market for Lemons Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Modelling Risk Aversion.xlsx",
+      "topic": "Modelling Risk Aversion Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Decisions under Risk.xlsx",
+      "topic": "Decisions under Risk Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Topic 4.xlsx",
+      "topic": "Topic 4",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic 5.xlsx",
+      "topic": "Topic 5",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic 5_condensed.xlsx",
+      "topic": "Topic 5",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Topic 6.xlsx",
+      "topic": "Topic 6",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Reading Value of ERM.xlsx",
+      "topic": "Value of ERM Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Housing Boom and Bust.xlsx",
+      "topic": "Housing Boom and Bust Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Shadow Insurance.xlsx",
+      "topic": "Shadow Insurance Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Bank Runs.xlsx",
+      "topic": "Bank Runs Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Reinsurance.xlsx",
+      "topic": "Reinsurance Paper-Cast",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Reading Corporate Scandals Videos.xlsx",
+      "topic": "Corporate Scandals Videos",
+      "enabled": false
+    },
+    {
+      "file": "Test Bank Topic 7.xlsx",
+      "topic": "Topic 7",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic 8.xlsx",
+      "topic": "Topic 8",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic 9.xlsx",
+      "topic": "Topic 9",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Reading RAND HIE.xlsx",
+      "topic": "RAND HIE Paper-Cast",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Reading United Welfare.xlsx",
+      "topic": "United Welfare Paper-Cast",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Reading Oregon Medicaid.xlsx",
+      "topic": "Oregon Medicaid Paper-Cast",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Reading Arrow Health Economics.xlsx",
+      "topic": "Arrow Health Economics Paper-Cast",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Reading Social Insurance.xlsx",
+      "topic": "Social Insurance Paper-Cast",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic Gruber Video.xlsx",
+      "topic": "Health Insurance Videos",
+      "enabled": true
+    },
+    {
+      "file": "Test Bank Topic HIG.xlsx",
+      "topic": "Health Insurance Game",
+      "enabled": false
+    }
+  ],
+  "professor": "Professor Ellis",
+  "university": "University of Iowa"
+}

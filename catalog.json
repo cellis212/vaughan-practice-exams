@@ -1,0 +1,31 @@
+{
+  "universities": [
+    {
+      "id": "university-of-iowa",
+      "name": "University of Iowa",
+      "courses": [
+        {
+          "id": "intro-to-rmi",
+          "name": "Introduction to Risk Management and Insurance (FIN 3400)",
+          "professors": [
+            { "id": "ellis", "name": "Professor Ellis" },
+            { "id": "esson", "name": "Professor Esson" },
+            { "id": "grace", "name": "Professor Grace" },
+            { "id": "biege", "name": "Professor Biege" },
+            { "id": "haack", "name": "Professor Haack" },
+            { "id": "winjum", "name": "Professor Winjum" }
+          ]
+        },
+        {
+          "id": "life-health",
+          "name": "Life / Health Insurance (FIN 4430)",
+          "professors": [
+            { "id": "ellis", "name": "Professor Ellis" },
+            { "id": "esson", "name": "Professor Esson" },
+            { "id": "abraham", "name": "Professor Abraham" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+tests/out_r/
+tests/out_py/
+tests/compile/
+.DS_Store
+__pycache__/
