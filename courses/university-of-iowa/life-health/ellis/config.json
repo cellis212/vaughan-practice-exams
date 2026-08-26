@@ -11,147 +11,176 @@
     {
       "file": "Module 3/Test Bank Module 3.xlsx",
       "topic": "Lecture",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Annuity Puzzle.xlsx",
       "topic": "Annuity Puzzle",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Backdating.xlsx",
       "topic": "Backdating",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Fragility of Variable Annuities.xlsx",
       "topic": "Fragility of Variable Annuities",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Intro to RILAs.xlsx",
       "topic": "Intro to RILAs",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Lapse Based Insurance.xlsx",
       "topic": "Lapse-Based Insurance",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Selection through Lapsation.xlsx",
       "topic": "Selection through Lapsation",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Shadow Insurance.xlsx",
       "topic": "Shadow Insurance",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Long Term Care.xlsx",
       "topic": "Long Term Care",
-      "enabled": true
+      "enabled": true,
+      "group": "Midterm 3"
     },
     {
       "file": "Module 1/Test Bank Module 1.xlsx",
       "topic": "Lecture (Module 1)",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 1/Test Bank Reading - 2nd Best.xlsx",
       "topic": "Theory of the Second Best",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 1/Test Bank Reading - Equilibrium in Comp Ins.xlsx",
       "topic": "Eq. in Comp. Ins.",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 1/Test Bank Reading - Invisible Hands.xlsx",
       "topic": "Invisible Hands",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 1/Test Bank Reading - On Moral Hazard.xlsx",
       "topic": "On Moral Hazard",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 1/Test Bank Reading - Org Forms.xlsx",
       "topic": "Org Forms",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 1/Test Bank Reading - Social Insurance.xlsx",
       "topic": "Social Insurance",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 1/Test Bank Topic Information Asymmetry and Lemons.xlsx",
       "topic": "Information Asymmetry and Lemons",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 1"
     },
     {
       "file": "Module 2/Test Bank Topic 4.xlsx",
       "topic": "Lecture Topic 4",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Topics 5-6 --History US Health Insurance-Public Insurance-Current Issues_Condensed.xlsx",
       "topic": "Lecture Topics 5-6",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Three Party System Game.xlsx",
       "topic": "Lecture Game",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - Bankruptcy.xlsx",
       "topic": "Bankruptcy as Implicit Health Insurance",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Healthcare Fraud.xlsx",
       "topic": "Healthcare Fraud",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - MHIU.xlsx",
       "topic": "MHIU",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - IO of Health.xlsx",
       "topic": "IO of Health",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - Pharmaceutical Formularies.xlsx",
       "topic": "Pharmaceutical Formularies and Rebates",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - Agents and Brokers.xlsx",
       "topic": "Agents and Brokers",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading Arrow Health Economics.xlsx",
       "topic": "Arrow Health Economics",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading Oregon Medicaid.xlsx",
       "topic": "Oregon Medicaid",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading RAND HIE.xlsx",
       "topic": "RAND HIE",
-      "enabled": false
+      "enabled": false,
+      "group": "Midterm 2"
     }
   ],
   "professor": "Professor Ellis",

@@ -135,6 +135,56 @@ a.download-btn {
 
 .topic-list input { margin-right: 0.45rem; }
 
+.topic-group {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin: 0.4rem 0;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  padding: 0.35rem 0.55rem;
+}
+
+.group-header .group-cb { margin: 0 0.35rem 0 0; }
+
+.group-toggle {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-weight: bold;
+  background: none;
+  border: none;
+  padding: 0.1rem 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+
+.group-toggle .chevron {
+  color: var(--accent);
+  width: 0.9em;
+  display: inline-block;
+}
+
+.group-toggle .group-count {
+  font-weight: normal;
+  color: var(--muted);
+  font-size: 0.88em;
+}
+
+.group-topics {
+  display: none;
+  border-top: 1px solid var(--line);
+  padding: 0.4rem 0.6rem 0.5rem 1.7rem;
+}
+
+.topic-group.open .group-topics { display: block; }
+
 .checkbox-row { margin-top: 0.9rem; }
 .checkbox-row label { font-weight: normal; }
 .checkbox-row input { margin-right: 0.45rem; }

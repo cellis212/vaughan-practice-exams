@@ -60,26 +60,116 @@ function enabledBanks() {
   return config.banks.filter((b) => b.enabled);
 }
 
+function makeTopicLabel(topic) {
+  const label = document.createElement("label");
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  cb.value = topic;
+  cb.className = "topic-cb";
+  label.appendChild(cb);
+  label.appendChild(document.createTextNode(topic));
+  return label;
+}
+
+// One collapsible exam section: a select-all checkbox for the whole group,
+// a click-to-expand header, and the group's individual topic checkboxes.
+function makeGroupSection(name, topicNames) {
+  const section = document.createElement("div");
+  section.className = "topic-group";
+
+  const header = document.createElement("div");
+  header.className = "group-header";
+
+  const groupCb = document.createElement("input");
+  groupCb.type = "checkbox";
+  groupCb.className = "group-cb";
+  groupCb.title = "Select all " + name + " topics";
+
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "group-toggle";
+  const chevron = document.createElement("span");
+  chevron.className = "chevron";
+  chevron.textContent = "▸";
+  const labelSpan = document.createElement("span");
+  labelSpan.textContent = name;
+  const countSpan = document.createElement("span");
+  countSpan.className = "group-count";
+  countSpan.textContent = "(" + topicNames.length +
+    (topicNames.length === 1 ? " topic)" : " topics)");
+  toggle.appendChild(chevron);
+  toggle.appendChild(labelSpan);
+  toggle.appendChild(countSpan);
+
+  header.appendChild(groupCb);
+  header.appendChild(toggle);
+  section.appendChild(header);
+
+  const inner = document.createElement("div");
+  inner.className = "group-topics";
+  const topicCbs = [];
+  for (const t of topicNames) {
+    const label = makeTopicLabel(t);
+    topicCbs.push(label.querySelector("input"));
+    inner.appendChild(label);
+  }
+  section.appendChild(inner);
+
+  toggle.addEventListener("click", () => {
+    const open = section.classList.toggle("open");
+    chevron.textContent = open ? "▾" : "▸";
+  });
+
+  groupCb.addEventListener("change", () => {
+    for (const cb of topicCbs) cb.checked = groupCb.checked;
+    groupCb.indeterminate = false;
+  });
+
+  function syncGroupCb() {
+    const n = topicCbs.filter((cb) => cb.checked).length;
+    groupCb.checked = n === topicCbs.length && n > 0;
+    groupCb.indeterminate = n > 0 && n < topicCbs.length;
+  }
+  for (const cb of topicCbs) cb.addEventListener("change", syncGroupCb);
+
+  return section;
+}
+
 function renderUi() {
   document.title = config.app_title;
   document.getElementById("app-title").textContent = config.app_title;
   document.getElementById("crumb-detail").textContent =
     " · " + config.university + " · " + config.course_name + " · " + config.professor;
 
-  // Topic checkboxes: unique(full_bank$Topic) in bank-load order.
+  // Topic checkboxes: unique(full_bank$Topic) in bank-load order, sectioned
+  // by each bank's configured "group" (e.g. Midterm 1/2/3). Groups are
+  // config-driven per professor/course, not hardcoded; a config with no
+  // groups renders the original flat list.
   const seen = new Set();
-  const list = document.getElementById("topic-list");
+  const topics = [];
   for (const bank of enabledBanks()) {
     if (seen.has(bank.topic)) continue;
     seen.add(bank.topic);
-    const label = document.createElement("label");
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.value = bank.topic;
-    cb.className = "topic-cb";
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(bank.topic));
-    list.appendChild(label);
+    topics.push({ topic: bank.topic, group: bank.group || null });
+  }
+
+  const list = document.getElementById("topic-list");
+  if (!topics.some((t) => t.group)) {
+    for (const t of topics) list.appendChild(makeTopicLabel(t.topic));
+  } else {
+    const groupOrder = [];
+    const grouped = new Map();
+    for (const t of topics) {
+      const g = t.group || "Other Topics";
+      if (!grouped.has(g)) {
+        grouped.set(g, []);
+        groupOrder.push(g);
+      }
+      grouped.get(g).push(t.topic);
+    }
+    for (const g of groupOrder) {
+      list.appendChild(makeGroupSection(g, grouped.get(g)));
+    }
   }
 
   document.getElementById("n-questions").value = config.default_n_questions;

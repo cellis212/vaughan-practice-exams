@@ -61,6 +61,11 @@ Each professor/course combination owns its folder under
    `"enabled"` flag (this mirrors commenting banks in/out of
    `banks_to_load` in the original `app.R`). Order matters — it is the order
    topics appear in the sidebar.
+3. **Exam sections**: each bank's `"group"` field (e.g. `"Midterm 1"`) is the
+   collapsible section it appears under in the sidebar; the section's
+   checkbox selects every topic in that exam at once. Group names and
+   assignments are free-form per professor — rename them, regroup banks, or
+   remove the `"group"` fields entirely to get a flat topic list.
 3. Commit and push (or edit directly on GitHub). The site updates on the
    next Pages deploy — no build step.
 
