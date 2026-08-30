@@ -17,6 +17,7 @@ const profId = params.get("p");
 
 const statusLine = document.getElementById("status-line");
 const generateBtn = document.getElementById("generate-exam");
+const copyLinkBtn = document.getElementById("copy-link");
 const downloadArea = document.getElementById("download-area");
 const compileLogEl = document.getElementById("compile-log");
 
@@ -48,6 +49,25 @@ function fail(message) {
 
 function comboBase() {
   return "courses/" + uniId + "/" + courseId + "/" + profId;
+}
+
+function selectionUrl() {
+  const url = new URL("generator.html", window.location.href);
+  url.search = new URLSearchParams({ u: uniId, c: courseId, p: profId }).toString();
+  return url.href;
+}
+
+async function onCopyLink() {
+  try {
+    if (!navigator.clipboard || !navigator.clipboard.writeText) {
+      throw new Error("Clipboard access is unavailable in this browser.");
+    }
+    await navigator.clipboard.writeText(selectionUrl());
+    notify("Link copied to clipboard.", "message");
+  } catch (err) {
+    console.error(err);
+    notify("Could not copy the link. Copy it from the address bar instead.", "error");
+  }
 }
 
 async function fetchOk(url, as, revalidate) {
@@ -157,6 +177,7 @@ function renderUi() {
   document.getElementById("app-title").textContent = config.app_title;
   document.getElementById("crumb-detail").textContent =
     " · " + config.university + " · " + config.course_name + " · " + config.professor;
+  copyLinkBtn.hidden = false;
 
   // Topic checkboxes: unique(full_bank$Topic) in bank-load order, sectioned
   // by each bank's configured "group" (e.g. Midterm 1/2/3). Groups are
@@ -432,6 +453,7 @@ async function onGenerate() {
     return;
   }
   renderUi();
+  copyLinkBtn.addEventListener("click", onCopyLink);
   generateBtn.addEventListener("click", onGenerate);
   try {
     await loadEngine();
