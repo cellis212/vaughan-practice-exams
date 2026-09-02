@@ -136,4 +136,15 @@ engine_lh.create_exam(bank=full_lh,
                       frontPage=True, max_q=25, real_exam=False,
                       landscape=False)
 
+lecture_lh = generator.load_full_bank([
+    {"path": "Module 1/Test Bank Module 1.xlsx", "topic": "Lecture (Module 1)"},
+], base_dir=lh_data)
+engine_lh.create_exam(bank=lecture_lh,
+                      qind=list(range(1, len(lecture_lh) + 1)),
+                      tit="Practice Exam:", sem="Spring 2026",
+                      classnum="FIN 4430", numVer=1,
+                      file=os.path.join(out_dir, "lh_module1_every_question.tex"),
+                      frontPage=True, max_q=len(lecture_lh), real_exam=False,
+                      landscape=False)
+
 print("Python parity outputs written to", out_dir)

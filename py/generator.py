@@ -15,6 +15,7 @@ Runs both under Pyodide in the browser and under plain CPython for tests.
 import os
 
 import openpyxl
+from openpyxl.utils.escape import unescape
 
 import exam_common
 from exam_common import r_char
@@ -52,9 +53,11 @@ def read_xlsx(path):
         for name, value in zip(header, raw):
             value = r_char(value)
             if isinstance(value, str):
-                # readxl defaults: trim_ws = TRUE, na = "" (whitespace-only
-                # or empty cells become NA)
-                value = value.strip(" \t\r\n")
+                # Decode Excel escapes such as _x000D_ before LaTeX output.
+                value = unescape(value)
+                # readxl trims spaces/tabs but preserves line breaks;
+                # empty strings become NA.
+                value = value.strip(" \t")
                 if value == "":
                     value = None
             row[name] = value

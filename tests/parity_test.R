@@ -143,4 +143,13 @@ lh$create_exam(bank = full_lh, qind = seq_len(nrow(full_lh)),
                frontPage = TRUE, max_q = 25, real_exam = FALSE,
                landscape = FALSE)
 
+lecture_lh <- readxl::read_xlsx(file.path(lh_data, "Module 1", "Test Bank Module 1.xlsx")) %>%
+  mutate(Topic = "Lecture (Module 1)")
+lh$create_exam(bank = lecture_lh, qind = seq_len(nrow(lecture_lh)),
+               tit = "Practice Exam:", sem = "Spring 2026",
+               classnum = "FIN 4430", numVer = 1,
+               file = file.path(out_dir, "lh_module1_every_question.tex"),
+               frontPage = TRUE, max_q = nrow(lecture_lh), real_exam = FALSE,
+               landscape = FALSE)
+
 cat("R parity outputs written to", out_dir, "\n")
