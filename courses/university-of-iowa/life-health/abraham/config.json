@@ -59,67 +59,67 @@
     {
       "file": "Module 2/Test Bank Topic 4.xlsx",
       "topic": "Lecture Topic 4",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Topics 5-6 --History US Health Insurance-Public Insurance-Current Issues_Condensed.xlsx",
       "topic": "Lecture Topics 5-6",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - Bankruptcy.xlsx",
       "topic": "Bankruptcy as Implicit Health Insurance",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Healthcare Fraud.xlsx",
       "topic": "Healthcare Fraud",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - MHIU.xlsx",
       "topic": "MHIU",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - IO of Health.xlsx",
       "topic": "IO of Health",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - Pharmaceutical Formularies.xlsx",
       "topic": "Pharmaceutical Formularies and Rebates",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading - Agents and Brokers.xlsx",
       "topic": "Agents and Brokers",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading Arrow Health Economics.xlsx",
       "topic": "Arrow Health Economics",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading Oregon Medicaid.xlsx",
       "topic": "Oregon Medicaid",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Module 2/Test Bank Reading RAND HIE.xlsx",
       "topic": "RAND HIE",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
