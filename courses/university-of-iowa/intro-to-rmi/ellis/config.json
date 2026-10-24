@@ -77,7 +77,7 @@
     {
       "file": "Test Bank Topic 4.xlsx",
       "topic": "Topic 4",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
@@ -89,49 +89,49 @@
     {
       "file": "Test Bank Topic 5_condensed.xlsx",
       "topic": "Topic 5",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Test Bank Topic 6.xlsx",
       "topic": "Topic 6",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Test Bank Reading Value of ERM.xlsx",
       "topic": "Value of ERM Paper-Cast",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Test Bank Reading Housing Boom and Bust.xlsx",
       "topic": "Housing Boom and Bust Paper-Cast",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Test Bank Reading Shadow Insurance.xlsx",
       "topic": "Shadow Insurance Paper-Cast",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Test Bank Reading Bank Runs.xlsx",
       "topic": "Bank Runs Paper-Cast",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Test Bank Reading Reinsurance.xlsx",
       "topic": "Reinsurance Paper-Cast",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
       "file": "Test Bank Reading Corporate Scandals Videos.xlsx",
       "topic": "Corporate Scandals Videos",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 2"
     },
     {
