@@ -24,13 +24,24 @@ for FIN 3400 (Introduction to RMI) and FIN 4430 (Life / Health Insurance).
   `assets/examdesign.cls` is sent along with every compile so the document
   class is pinned.
 - If `latex.ytotech.com` is down (it fails without returning a compile log),
-  the page automatically posts the same files to
+  the page compiles the PDF **in the student's browser**: pdfTeX compiled to
+  WebAssembly ([SwiftLaTeX](https://github.com/SwiftLaTeX/SwiftLaTeX),
+  `vendor/swiftlatex/`) runs in a Web Worker with the TeX files from
+  `assets/texlive-bundle.tar.gz`. Both are downloaded only on that first
+  failure (about 6.5 MB). The result is the same PDF native pdflatex makes, with
+  the usual download button and version/answer-key zip; a 75-question exam
+  compiles in about a second. The rest of the session skips
+  `latex.ytotech.com`.
+- If the in-browser compile also fails, the page posts the same files to
   [texlive.net](https://texlive.net) and opens the PDF in a new tab, or in
   the same tab if the browser blocks the new one. texlive.net sends no CORS
   headers, so the separate version/answer-key zip is unavailable on that
   path. It also stops each pdflatex run after 15 seconds, which only very
-  large exams (700+ questions) hit. A LaTeX error in the exam still shows
-  the compile log instead of falling back.
+  large exams (700+ questions) hit.
+- A LaTeX error in an exam shows `latex.ytotech.com`'s compile log instead
+  of falling back. `latex.ytotech.com` compiles past such errors when it can;
+  the in-browser engine and texlive.net stop at the first one, so a question
+  with a LaTeX error fails on the backup paths.
 
 Pipeline: select topics → sample questions → randomize answer choices
 (`rc`) → format questions/blocks (`fq`/`fqb`) → assemble `.tex`
@@ -47,6 +58,10 @@ py/
   engine_lh.py             create_exam() for FIN 4430 (Life/Health variant)
   generator.py             Bank loading + the generate handler (app.R port)
 assets/examdesign.cls      LaTeX document class shipped with every compile
+assets/texlive-bundle.tar.gz  LaTeX format + packages/fonts for the in-browser
+                           compiler (built by tools/build_texlive_bundle.py)
+vendor/swiftlatex/         pdfTeX compiled to WebAssembly (SwiftLaTeX,
+                           unmodified, AGPL) + our offline worker wrapper
 catalog.json               Universities / courses / professors shown on the landing page
 banks/<course>/*.xlsx      The central test-bank store, one copy per course,
                            shared by every professor of that course
@@ -56,7 +71,9 @@ courses/<university>/<course>/<professor>/
   data/*.xlsx              Optional professor-specific banks (only for
                            entries marked "local": true — none by default)
 tools/                     Scripts that regenerate the parameterized banks
-tests/                     R-vs-Python byte-level parity test (see below)
+                           and the in-browser TeX bundle
+tests/                     R-vs-Python byte-level parity test (see below),
+                           param-engine and TeX-bundle tests
 ```
 
 ## Updating your test bank (professors)
@@ -178,9 +195,26 @@ The only intended behavioral differences from the Shiny apps:
 - R's and Python's random number generators differ, so the same seed does
   not reproduce the same exam across the two implementations (a seed still
   reproduces the same exam within this site).
-- PDF compilation happens on latex.ytotech.com instead of a local
-  `pdflatex`/tinytex, and a failed compile shows the log instead of
-  silently claiming success.
+- PDF compilation happens on latex.ytotech.com (or in the browser when it
+  is down) instead of a local `pdflatex`/tinytex, and a failed compile
+  shows the log instead of silently claiming success.
+
+## In-browser compiler bundle
+
+`assets/texlive-bundle.tar.gz` holds the LaTeX format (built inside the
+SwiftLaTeX engine from the local TeX Live, English hyphenation only) and
+every package, font, and font map line the exams use. Apart from
+`pdftex.map`, cut down to those fonts, every file is unmodified TeX Live
+content. `tools/build_texlive_bundle.py` rebuilds it by compiling every
+question of every bank (portrait, landscape, 3 versions) in the engine and
+recording the files it reads; `tests/test_texlive_bundle.py` compiles the
+same exams with only the bundle and checks every word and its position on
+every page against native `pdflatex`. Re-run both after changing the exam
+preamble (`py/engine_*.py`) or `assets/examdesign.cls`, or after adding
+questions that use new fonts or symbols (a missing file makes the
+in-browser compile fail, and the page falls back to texlive.net). Both need
+Node.js and TeX Live; the build takes about five minutes and the test about
+eight.
 
 ## Local development
 

@@ -8,12 +8,19 @@
 // compile so the document class is pinned.
 //
 // If that service is down (it fails without returning a compile log), the
-// page automatically posts the same .tex and .cls as a form to texlive.net,
-// which shows the PDF in a new tab (or this tab if the browser blocks the new
-// one). That endpoint sends no CORS headers, so the page never sees the PDF
-// bytes and the per-version split is unavailable on the backup path.
+// page compiles in the browser instead: pdfTeX compiled to WebAssembly
+// (SwiftLaTeX, vendor/swiftlatex) runs in a Web Worker with the TeX files
+// from assets/texlive-bundle.tar.gz, both loaded only on that first failure.
+// The PDF comes back to the page, so downloads and the per-version split work
+// as usual. If that also fails, the page posts the .tex and .cls as a form to
+// texlive.net, which shows the PDF in a new tab (or this tab if the browser
+// blocks the new one); that endpoint sends no CORS headers, so the page never
+// sees those PDF bytes and the per-version split is unavailable there.
 
 const LATEX_ENDPOINT = "https://latex.ytotech.com/builds/sync";
+const BROWSER_TEX_WORKER = "vendor/swiftlatex/offline-worker.js";
+const BROWSER_TEX_BUNDLE = "assets/texlive-bundle.tar.gz?v=1";
+const BROWSER_TEX_TIMEOUT_MS = 5 * 60 * 1000;
 const BACKUP_LATEX_ENDPOINT = "https://texlive.net/cgi-bin/latexcgi";
 const BACKUP_WINDOW_NAME = "practice-exam-backup-pdf";
 const PY_MODULES = ["exam_common.py", "engine_intro.py", "engine_lh.py", "generator.py", "param_engine.py", "pdf_split.py"];
@@ -34,6 +41,10 @@ let config = null;
 let clsText = null;
 let banksLoaded = false;
 let currentPdfUrl = null;
+// After latex.ytotech.com fails once, later exams in this session go
+// straight to the in-browser compiler.
+let primaryCompilerDown = false;
+let browserTex = null; // Promise of a ready BrowserTeX, created on first use
 
 function notify(message, type) {
   const el = document.createElement("div");
@@ -357,6 +368,120 @@ async function compilePdf(tex) {
   return new Blob([bytes], { type: "application/pdf" });
 }
 
+// The SwiftLaTeX worker replies to each request in order: {result: "ok"} once
+// the engine has started, then one reply per "writefile" or "compilelatex"
+// message ("setmainfile" has no reply).
+class BrowserTeX {
+  constructor() {
+    this.pending = [];
+    this.runs = 0;
+    this.worker = new Worker(BROWSER_TEX_WORKER);
+    this.ready = new Promise((resolve, reject) => this.pending.push({ resolve, reject }));
+    this.worker.onmessage = (ev) => {
+      const next = this.pending.shift();
+      if (next) next.resolve(ev.data);
+    };
+    this.worker.onerror = (ev) => {
+      this.stop(new Error("In-browser LaTeX engine error: " + (ev.message || "unknown")));
+    };
+  }
+
+  stop(err) {
+    for (const p of this.pending.splice(0)) p.reject(err);
+    this.worker.terminate();
+  }
+
+  request(message, transfer) {
+    return new Promise((resolve, reject) => {
+      this.pending.push({ resolve, reject });
+      this.worker.postMessage(message, transfer || []);
+    });
+  }
+
+  async writeFile(name, src, transfer) {
+    const reply = await this.request({ cmd: "writefile", url: name, src }, transfer);
+    if (reply.result !== "ok") throw new Error("Could not write " + name + " into the in-browser LaTeX engine.");
+  }
+
+  async compile(tex) {
+    // A new main file name each run, so a previous exam's .aux is never read.
+    this.runs += 1;
+    const main = "exam" + this.runs + ".tex";
+    await this.writeFile("examdesign.cls", clsText);
+    await this.writeFile(main, tex);
+    this.worker.postMessage({ cmd: "setmainfile", url: main });
+    const reply = await this.request({ cmd: "compilelatex" });
+    if (reply.result !== "ok") {
+      console.warn("In-browser LaTeX log:\n" + reply.log);
+      throw new Error("In-browser LaTeX compile failed (status " + reply.status + ").");
+    }
+    return new Blob([reply.pdf], { type: "application/pdf" });
+  }
+}
+
+// Files of an uncompressed ustar archive, as [name, bytes] pairs.
+function untar(bytes) {
+  const files = [];
+  const text = (start, end) => new TextDecoder().decode(bytes.subarray(start, end)).replace(/\0.*$/s, "");
+  for (let off = 0; off + 512 <= bytes.length && bytes[off] !== 0;) {
+    const name = text(off, off + 100);
+    const size = parseInt(text(off + 124, off + 136).trim(), 8);
+    const type = bytes[off + 156];
+    off += 512;
+    if (type === 0 || type === 0x30) files.push([name, bytes.slice(off, off + size)]);
+    off += Math.ceil(size / 512) * 512;
+  }
+  return files;
+}
+
+async function fetchTexBundle() {
+  const resp = await fetch(BROWSER_TEX_BUNDLE);
+  if (!resp.ok) throw new Error("Failed to load " + BROWSER_TEX_BUNDLE + " (HTTP " + resp.status + ")");
+  let bytes = new Uint8Array(await resp.arrayBuffer());
+  if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+    bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+  return untar(bytes);
+}
+
+function getBrowserTeX() {
+  if (!browserTex) {
+    browserTex = (async () => {
+      const engine = new BrowserTeX();
+      try {
+        const [, files] = await Promise.all([engine.ready, fetchTexBundle()]);
+        await Promise.all(files.map(([name, data]) => engine.writeFile(name, data, [data.buffer])));
+        return engine;
+      } catch (err) {
+        engine.stop(err);
+        throw err;
+      }
+    })();
+    browserTex.catch(() => { browserTex = null; });
+  }
+  return browserTex;
+}
+
+async function compileInBrowser(tex) {
+  const engine = await getBrowserTeX();
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error("In-browser LaTeX compile timed out.")), BROWSER_TEX_TIMEOUT_MS);
+  });
+  try {
+    return await Promise.race([engine.compile(tex), timeout]);
+  } catch (err) {
+    // An engine that aborted or timed out may never answer again, so start a
+    // fresh one next time.
+    engine.stop(err);
+    browserTex = null;
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Compile on texlive.net. Its latexcgi takes multipart form fields:
 // filename[] / filecontents[] pairs (the main file must be document.tex),
 // engine, and return=pdf, which redirects to the compiled PDF (or to the log
@@ -483,10 +608,17 @@ async function onGenerate() {
     }
 
     setStatus("Compiling PDF (this can take up to a minute)…");
-    const blob = await compilePdf(result.tex);
+    let blob = primaryCompilerDown ? null : await compilePdf(result.tex);
     if (blob === null) {
-      compileOnBackup(result.tex);
-      return;
+      primaryCompilerDown = true;
+      setStatus("Compiling PDF in your browser (the first exam takes a little longer)…");
+      try {
+        blob = await compileInBrowser(result.tex);
+      } catch (err) {
+        console.warn("In-browser LaTeX failed; using texlive.net:", err);
+        compileOnBackup(result.tex);
+        return;
+      }
     }
     if (document.getElementById("split-files").checked) {
       setStatus("Splitting versions and answer keys…");
