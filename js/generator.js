@@ -6,8 +6,16 @@
 // by the LaTeX-on-HTTP service (latex.ytotech.com), which returns the PDF
 // directly with CORS enabled; we send the repo's examdesign.cls with every
 // compile so the document class is pinned.
+//
+// If that service is down (it fails without returning a compile log), the
+// page automatically posts the same .tex and .cls as a form to texlive.net,
+// which shows the PDF in a new tab (or this tab if the browser blocks the new
+// one). That endpoint sends no CORS headers, so the page never sees the PDF
+// bytes and the per-version split is unavailable on the backup path.
 
 const LATEX_ENDPOINT = "https://latex.ytotech.com/builds/sync";
+const BACKUP_LATEX_ENDPOINT = "https://texlive.net/cgi-bin/latexcgi";
+const BACKUP_WINDOW_NAME = "practice-exam-backup-pdf";
 const PY_MODULES = ["exam_common.py", "engine_intro.py", "engine_lh.py", "generator.py", "param_engine.py", "pdf_split.py"];
 
 const params = new URLSearchParams(window.location.search);
@@ -304,6 +312,10 @@ def run_generation(sel_topics_json, n_questions, seed_input, landscape,
   setStatus("Ready.");
 }
 
+// Returns the PDF blob, or null when the service itself failed (unreachable,
+// or an error without a compile log) so the caller can use the backup. A
+// LaTeX error in the exam returns a compile log; that is shown and stops
+// generation, since the backup compiler would hit the same error.
 async function compilePdf(tex) {
   const payload = {
     compiler: "pdflatex",
@@ -313,28 +325,82 @@ async function compilePdf(tex) {
     ],
   };
 
-  const resp = await fetch(LATEX_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  let resp;
+  try {
+    resp = await fetch(LATEX_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.warn("LaTeX service unreachable:", err);
+    return null;
+  }
   const buf = await resp.arrayBuffer();
   const bytes = new Uint8Array(buf);
   // A PDF starts with %PDF; anything else is an error/log payload.
   const isPdf = bytes.length > 4 && bytes[0] === 0x25 && bytes[1] === 0x50 &&
     bytes[2] === 0x44 && bytes[3] === 0x46;
   if (!resp.ok || !isPdf) {
-    let log = new TextDecoder().decode(bytes);
-    try {
-      const parsed = JSON.parse(log);
-      if (parsed.logs) log = typeof parsed.logs === "string" ? parsed.logs : JSON.stringify(parsed.logs, null, 2);
-    } catch (e) { /* not JSON; show raw text */ }
-    compileLogEl.textContent = log;
+    const body = new TextDecoder().decode(bytes);
+    let parsed = null;
+    try { parsed = JSON.parse(body); } catch (e) { /* not JSON */ }
+    if (!parsed || !parsed.logs) {
+      console.warn("LaTeX service failed (HTTP " + resp.status + "):", body);
+      return null;
+    }
+    compileLogEl.textContent = typeof parsed.logs === "string" ? parsed.logs : JSON.stringify(parsed.logs, null, 2);
     compileLogEl.style.display = "block";
     fail("PDF compilation failed (HTTP " + resp.status + "). The compile log is shown below.");
   }
   compileLogEl.style.display = "none";
   return new Blob([bytes], { type: "application/pdf" });
+}
+
+// Compile on texlive.net. Its latexcgi takes multipart form fields:
+// filename[] / filecontents[] pairs (the main file must be document.tex),
+// engine, and return=pdf, which redirects to the compiled PDF (or to the log
+// on failure). Opening the named window first tells us whether the browser
+// allowed a new tab; if not, the PDF replaces this page instead.
+function compileOnBackup(tex) {
+  if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
+  currentPdfUrl = null;
+  downloadArea.innerHTML = "";
+  compileLogEl.style.display = "none";
+
+  const win = window.open("", BACKUP_WINDOW_NAME);
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = BACKUP_LATEX_ENDPOINT;
+  form.enctype = "multipart/form-data";
+  form.target = win ? BACKUP_WINDOW_NAME : "_self";
+  form.style.display = "none";
+  const fields = [
+    ["filename[]", "document.tex"],
+    ["filecontents[]", tex],
+    ["filename[]", "examdesign.cls"],
+    ["filecontents[]", clsText],
+    ["engine", "pdflatex"],
+    ["return", "pdf"],
+  ];
+  for (const [name, value] of fields) {
+    const ta = document.createElement("textarea");
+    ta.name = name;
+    ta.value = value;
+    form.appendChild(ta);
+  }
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(() => form.remove(), 0);
+
+  let message = "The main PDF compiler is unavailable, so the exam was compiled " +
+    "by the backup compiler (texlive.net) and opened in a new tab.";
+  if (document.getElementById("split-files").checked) {
+    message += " Separate version and answer-key files need the main compiler, " +
+      "so this is one combined PDF.";
+  }
+  setStatus(message);
+  notify(message, "message");
 }
 
 function showDownloadButton(blob, filename, label) {
@@ -418,6 +484,10 @@ async function onGenerate() {
 
     setStatus("Compiling PDF (this can take up to a minute)…");
     const blob = await compilePdf(result.tex);
+    if (blob === null) {
+      compileOnBackup(result.tex);
+      return;
+    }
     if (document.getElementById("split-files").checked) {
       setStatus("Splitting versions and answer keys…");
       const zipBlob = await splitAndZip(blob);

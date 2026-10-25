@@ -23,6 +23,14 @@ for FIN 3400 (Introduction to RMI) and FIN 4430 (Life / Health Insurance).
   `latex.ytotech.com` (CORS-enabled, returns the PDF directly). The repo's
   `assets/examdesign.cls` is sent along with every compile so the document
   class is pinned.
+- If `latex.ytotech.com` is down (it fails without returning a compile log),
+  the page automatically posts the same files to
+  [texlive.net](https://texlive.net) and opens the PDF in a new tab, or in
+  the same tab if the browser blocks the new one. texlive.net sends no CORS
+  headers, so the separate version/answer-key zip is unavailable on that
+  path. It also stops each pdflatex run after 15 seconds, which only very
+  large exams (700+ questions) hit. A LaTeX error in the exam still shows
+  the compile log instead of falling back.
 
 Pipeline: select topics → sample questions → randomize answer choices
 (`rc`) → format questions/blocks (`fq`/`fqb`) → assemble `.tex`
