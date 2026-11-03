@@ -91,7 +91,7 @@ async function onCopyLink() {
 
 async function fetchOk(url, as, revalidate) {
   // revalidate: for files that must stay in lockstep with this script
-  // (the Python modules and the config), bypass stale browser caches.
+  // (the Python modules, config, and question banks), bypass stale browser caches.
   const resp = await fetch(url, revalidate ? { cache: "no-cache" } : {});
   if (!resp.ok) fail("Failed to load " + url + " (HTTP " + resp.status + ")");
   if (as === "json") return resp.json();
@@ -280,7 +280,7 @@ async function loadEngine() {
   setStatus("Loading question banks…");
   pyodide.FS.mkdirTree("/app/data");
   for (const bank of enabledBanks()) {
-    const bytes = await fetchOk(bankUrl(bank), "bytes");
+    const bytes = await fetchOk(bankUrl(bank), "bytes", true);
     const dest = "/app/data/" + bank.file;
     const dir = dest.substring(0, dest.lastIndexOf("/"));
     pyodide.FS.mkdirTree(dir);
