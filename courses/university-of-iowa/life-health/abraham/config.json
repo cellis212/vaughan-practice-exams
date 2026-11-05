@@ -131,55 +131,55 @@
     {
       "file": "Module 3/Test Bank Module 3.xlsx",
       "topic": "Lecture",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Long Term Care.xlsx",
       "topic": "Long Term Care",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Annuity Puzzle.xlsx",
       "topic": "Annuity Puzzle",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Backdating.xlsx",
       "topic": "Backdating",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Fragility of Variable Annuities.xlsx",
       "topic": "Fragility of Variable Annuities",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Intro to RILAs.xlsx",
       "topic": "Intro to RILAs",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Lapse Based Insurance.xlsx",
       "topic": "Lapse-Based Insurance",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Selection through Lapsation.xlsx",
       "topic": "Selection through Lapsation",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     },
     {
       "file": "Module 3/Test Bank Reading - Shadow Insurance.xlsx",
       "topic": "Shadow Insurance",
-      "enabled": false,
+      "enabled": true,
       "group": "Midterm 3"
     }
   ],
